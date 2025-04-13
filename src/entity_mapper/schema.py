@@ -1,4 +1,4 @@
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Literal
 from enum import Enum
 from pydantic import BaseModel, Field
 
@@ -53,7 +53,7 @@ class Entity(BaseModel):
 
 class CompanyEntity(Entity):
     """Model for extracted company entities."""
-    type: EntityType = Field(EntityType.COMPANY, const=True)
+    type: Literal[EntityType.COMPANY] = Field(EntityType.COMPANY, description="Entity type (always company)")
     industry: Optional[str] = Field(None, description="Industry or sector")
     founding_date: Optional[str] = Field(None, description="Company founding date")
     address: Optional[Address] = Field(None, description="Company address")
@@ -65,7 +65,7 @@ class CompanyEntity(Entity):
 
 class PersonEntity(Entity):
     """Model for extracted person entities."""
-    type: EntityType = Field(EntityType.PERSON, const=True)
+    type: Literal[EntityType.PERSON] = Field(EntityType.PERSON, description="Entity type (always person)")
     title: Optional[str] = Field(None, description="Job title or role")
     organization: Optional[str] = Field(None, description="Affiliated organization")
     contact: Optional[ContactInfo] = Field(None, description="Contact information")
