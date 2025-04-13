@@ -13,9 +13,13 @@ from rich.logging import RichHandler
 from rich.table import Table
 from dotenv import load_dotenv
 
-from document_processor.extractor import DocumentExtractor
-from entity_mapper.mapper import EntityMapper, EntityDatabase
-from entity_mapper.schema import Entity, MappingResult
+# Add the current directory to the path so imports work correctly
+sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+
+from src.document_processor.extractor import DocumentExtractor
+from src.entity_mapper.mapper import EntityMapper, EntityDatabase
+from src.entity_mapper.schema import Entity, MappingResult
+from src.utils.visualization import generate_html_visualization
 
 # Set up logging
 console = Console()
@@ -188,6 +192,10 @@ def save_results(
     with open(mapping_file, "w") as f:
         mapping_data = [result.dict() for result in mapping_results]
         json.dump(mapping_data, f, indent=2)
+    
+    # Generate HTML visualization
+    html_file = doc_output_dir / "visualization.html"
+    generate_html_visualization(mapping_results, html_file)
     
     log.info(f"Results saved to {doc_output_dir}")
 
