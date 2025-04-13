@@ -9,12 +9,13 @@ import base64
 import json
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Union
+from io import BytesIO
 
 import numpy as np
 from PIL import Image
 from pdf2image import convert_from_path
 import openai
-from google import genai
+import google.generativeai as genai
 import anthropic
 
 from ..entity_mapper.schema import Entity, CompanyEntity, PersonEntity, EntityType
