@@ -3,11 +3,15 @@ Utilities for visualizing entity mapping results.
 """
 
 import os
+import sys
 import json
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Union
 
-from entity_mapper.schema import MappingResult
+# Add parent directory to path to enable imports
+sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
+
+from src.entity_mapper.schema import MappingResult
 
 
 def generate_html_visualization(
