@@ -11,6 +11,7 @@ class EntityType(str, Enum):
     CONTACT = "contact"
     PRODUCT = "product"
     SERVICE = "service"
+    SHIPMENT = "shipment"
     OTHER = "other"
 
 
@@ -53,7 +54,7 @@ class Entity(BaseModel):
 
 class CompanyEntity(Entity):
     """Model for extracted company entities."""
-    type: Literal[EntityType.COMPANY] = Field(EntityType.COMPANY, description="Entity type (always company)")
+    type: Literal[EntityType.COMPANY] = EntityType.COMPANY
     industry: Optional[str] = Field(None, description="Industry or sector")
     founding_date: Optional[str] = Field(None, description="Company founding date")
     address: Optional[Address] = Field(None, description="Company address")
@@ -65,10 +66,72 @@ class CompanyEntity(Entity):
 
 class PersonEntity(Entity):
     """Model for extracted person entities."""
-    type: Literal[EntityType.PERSON] = Field(EntityType.PERSON, description="Entity type (always person)")
+    type: Literal[EntityType.PERSON] = EntityType.PERSON
     title: Optional[str] = Field(None, description="Job title or role")
     organization: Optional[str] = Field(None, description="Affiliated organization")
     contact: Optional[ContactInfo] = Field(None, description="Contact information")
+
+
+class ReferenceNumbers(BaseModel):
+    """Reference numbers for a shipment."""
+    order_number: Optional[str] = Field(None, description="Order or reference number")
+    bol_number: Optional[str] = Field(None, description="Bill of lading number")
+    tracking_number: Optional[str] = Field(None, description="Tracking number")
+    pro_number: Optional[str] = Field(None, description="PRO number")
+    load_number: Optional[str] = Field(None, description="Load number")
+    carrier_reference: Optional[str] = Field(None, description="Carrier's reference number")
+
+
+class ShipmentDates(BaseModel):
+    """Important dates for a shipment."""
+    pickup: Optional[str] = Field(None, description="Pickup or collection date")
+    delivery: Optional[str] = Field(None, description="Delivery date")
+    created: Optional[str] = Field(None, description="Date the shipment was created or booked")
+    estimated_delivery: Optional[str] = Field(None, description="Estimated delivery date")
+
+
+class CargoDetails(BaseModel):
+    """Details about the cargo being shipped."""
+    description: Optional[str] = Field(None, description="Description of the cargo")
+    quantity: Optional[str] = Field(None, description="Quantity of items")
+    weight: Optional[str] = Field(None, description="Weight of the cargo")
+    dimensions: Optional[str] = Field(None, description="Dimensions of the cargo")
+    hazardous: bool = Field(default=False, description="Whether the cargo is hazardous")
+    special_instructions: Optional[str] = Field(None, description="Special handling instructions")
+
+
+class FinancialDetails(BaseModel):
+    """Financial details for a shipment."""
+    total_charges: Optional[str] = Field(None, description="Total charges for the shipment")
+    line_haul: Optional[str] = Field(None, description="Line haul charges")
+    fuel_surcharge: Optional[str] = Field(None, description="Fuel surcharge")
+    additional_charges: Dict[str, str] = Field(default_factory=dict, description="Additional charges with descriptions")
+    payment_terms: Optional[str] = Field(None, description="Payment terms")
+    currency: Optional[str] = Field(None, description="Currency used for financial amounts")
+
+
+class LocationEntity(Entity):
+    """Model for location entities (pickup/delivery points)."""
+    type: Literal[EntityType.LOCATION] = EntityType.LOCATION
+    address: Optional[Address] = Field(None, description="Location address")
+    contact: Optional[ContactInfo] = Field(None, description="Contact information")
+    location_type: Optional[str] = Field(None, description="Type of location (warehouse, terminal, etc.)")
+
+
+class ShipmentEntity(Entity):
+    """Model for shipment entities."""
+    type: Literal[EntityType.SHIPMENT] = EntityType.SHIPMENT
+    reference_numbers: Optional[ReferenceNumbers] = Field(None, description="Reference numbers for the shipment")
+    dates: Optional[ShipmentDates] = Field(None, description="Important dates for the shipment")
+    origin: Optional[str] = Field(None, description="Origin entity name")
+    destination: Optional[str] = Field(None, description="Destination entity name")
+    carrier: Optional[str] = Field(None, description="Carrier entity name")
+    shipper: Optional[str] = Field(None, description="Shipper entity name")
+    consignee: Optional[str] = Field(None, description="Consignee entity name")
+    cargo: Optional[CargoDetails] = Field(None, description="Details about the cargo")
+    financial: Optional[FinancialDetails] = Field(None, description="Financial details")
+    status: Optional[str] = Field(None, description="Current status of the shipment")
+    document_type: Optional[str] = Field(None, description="Type of document (BOL, freight invoice, etc.)")
 
 
 class MappingResult(BaseModel):

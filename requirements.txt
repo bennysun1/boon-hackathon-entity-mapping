@@ -27,6 +27,10 @@ python-Levenshtein>=0.20.0
 # Machine Learning
 mlflow>=2.8.0
 
+# Web interface
+flask>=2.3.0
+flask-wtf>=1.2.0
+
 # Development tools
 jupyter>=1.0.0
 pytest>=7.0.0
